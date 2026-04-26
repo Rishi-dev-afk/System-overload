@@ -10,7 +10,9 @@ export const ProgressView = () => {
     const fetchProgress = async () => {
       try {
         const response = await axios.get('/user-progress/');
-        setProgressData(response.data);
+        // DRF may return paginated { count, results } or a plain array
+        const data = response.data;
+        setProgressData(Array.isArray(data) ? data : (data.results || []));
       } catch (error) {
         console.error('Error fetching progress:', error);
       } finally {

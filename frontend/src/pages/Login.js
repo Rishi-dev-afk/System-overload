@@ -2,32 +2,31 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 
 export const Login = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ username: '', password: '', email: '' });
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const { login } = useAuthStore();
+
+  const { login, register } = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    const result = await login(credentials.username, credentials.password);
-    
+    const result = isLogin
+      ? await login(credentials.username, credentials.password)
+      : await register(credentials.username, credentials.password, credentials.email);
+
     if (!result.success) {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
 
   const handleChange = (e) => {
-    setCredentials(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    setCredentials(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (

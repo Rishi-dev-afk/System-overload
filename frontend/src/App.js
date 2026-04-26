@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
@@ -11,7 +11,12 @@ import { Login } from './pages/Login';
 import { useAuthStore } from './store/authStore';
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, checkAuth } = useAuthStore();
+
+  // On mount, validate the stored token and fetch user profile
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   if (!isAuthenticated) {
     return <Login />;
